@@ -2,6 +2,7 @@ import { enabledPlugins } from "./plugins";
 import type { Gate } from "./gates/types";
 import { loadWorkspace } from "./workspace";
 import { appendMetric } from "./metrics";
+
 export async function runRelease(opts: ReleaseOptions): Promise<void> {
   const rootDir = process.cwd();
   const services: string[] = [];
@@ -13,13 +14,18 @@ export async function runRelease(opts: ReleaseOptions): Promise<void> {
     services.push(opts.service!);
   }
 
+  const summary = {
+    success: [] as string[],
+    failed: [] as { service: string; gate: string }[],
+  };
+
+  const gates: Gate[] = enabledPlugins.flatMap(p => p.gates);
+
   for (const service of services) {
     const started = Date.now();
 
     console.log(`[release] start (${service})`);
     console.log("[release] dryRun:", opts.dryRun);
-
-    const gates: Gate[] = enabledPlugins.flatMap(p => p.gates);
 
     for (const gate of gates) {
       console.log(`[gate] ${gate.name}...`);
@@ -28,6 +34,8 @@ export async function runRelease(opts: ReleaseOptions): Promise<void> {
       if (!res.ok) {
         console.log(`[gate] ${gate.name}: FAIL`);
         console.log("[release] stopped:", res.message);
+
+        summary.failed.push({ service, gate: gate.name });
 
         appendMetric(rootDir, {
           ts: new Date().toISOString(),
@@ -46,6 +54,8 @@ export async function runRelease(opts: ReleaseOptions): Promise<void> {
       console.log(`[gate] ${gate.name}: OK`);
     }
 
+    summary.success.push(service);
+
     appendMetric(rootDir, {
       ts: new Date().toISOString(),
       service,
@@ -55,6 +65,16 @@ export async function runRelease(opts: ReleaseOptions): Promise<void> {
     });
 
     console.log(`[release] done (${service})`);
+  }
+
+  if (opts.all) {
+    console.log("\nSummary:");
+    console.log(`  success: ${summary.success.length}`);
+    console.log(`  failed: ${summary.failed.length}`);
+
+    for (const f of summary.failed) {
+      console.log(`    - ${f.service} (${f.gate})`);
+    }
   }
 }
 
