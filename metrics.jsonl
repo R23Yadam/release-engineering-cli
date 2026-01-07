@@ -1,0 +1,1 @@
+{"ts":"2026-01-07T17:09:45.712Z","service":"api","dryRun":true,"result":"fail","failedGate":"git-clean","message":"Uncommitted changes found. Commit or stash first.","durationMs":16}
