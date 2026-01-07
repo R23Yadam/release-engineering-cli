@@ -11,15 +11,24 @@ program
 
 program
   .command("release")
-  .description("Run release gates for one service")
-  .requiredOption("--service <name>", "Service name") // forces a value
-  .option("--dry-run", "Do not actually release")     // optional flag
+  .option("--service <name>", "Service name")
+  .option("--all", "Release all services")
+  .option("--dry-run")
   .action(async (opts) => {
-  await runRelease({
-    service: opts.service,
-    dryRun: Boolean(opts.dryRun),
+    const hasService = Boolean(opts.service);
+    const hasAll = Boolean(opts.all);
+
+    if (hasService === hasAll) {
+      console.error("Specify exactly one of --service or --all");
+      process.exit(2);
+    }
+
+    await runRelease({
+      service: opts.service,
+      all: Boolean(opts.all),
+      dryRun: Boolean(opts.dryRun),
+    });
   });
-});
 
 
 program.parse(process.argv);
