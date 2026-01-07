@@ -1,4 +1,5 @@
-import { defaultGates } from "./gates";
+import { enabledPlugins } from "./plugins";
+import type { Gate } from "./gates/types";
 
 export type ReleaseOptions = {
   service: string;
@@ -10,7 +11,9 @@ export async function runRelease(opts: ReleaseOptions): Promise<void> {
   console.log("[release] service:", opts.service);
   console.log("[release] dryRun:", opts.dryRun);
 
-  for (const gate of defaultGates) {
+  const gates: Gate[] = enabledPlugins.flatMap(p => p.gates);
+
+  for (const gate of gates) {
     console.log(`[gate] ${gate.name}...`);
     const res = await gate.run(opts);
 
