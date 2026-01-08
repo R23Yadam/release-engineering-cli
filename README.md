@@ -50,12 +50,7 @@ A `workspace.json` file defines which services exist:
   ]
 }
 
-````md
-## Usage
 
-### Single service (dry run)
-```bash
-npx tsx src/index.ts release --service api --dry-run
 ````
 
 ### All services
