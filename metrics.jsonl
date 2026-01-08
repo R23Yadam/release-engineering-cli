@@ -3,3 +3,5 @@
 {"ts":"2026-01-07T17:17:12.774Z","service":"api","dryRun":true,"result":"fail","failedGate":"git-clean","message":"Uncommitted changes found. Commit or stash first.","durationMs":11}
 {"ts":"2026-01-07T17:26:14.598Z","service":"api","dryRun":true,"result":"fail","failedGate":"git-clean","message":"Uncommitted changes found. Commit or stash first.","durationMs":16}
 {"ts":"2026-01-07T17:28:13.991Z","service":"api","dryRun":true,"result":"fail","failedGate":"git-clean","message":"Uncommitted changes found. Commit or stash first.","durationMs":15}
+{"ts":"2026-01-07T17:30:31.054Z","service":"api","dryRun":true,"result":"success","durationMs":10}
+{"ts":"2026-01-07T17:30:31.062Z","service":"web","dryRun":true,"result":"fail","failedGate":"git-clean","message":"Uncommitted changes found. Commit or stash first.","durationMs":8}
